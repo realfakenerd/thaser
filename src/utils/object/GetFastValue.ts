@@ -1,0 +1,18 @@
+/**
+ * Finds the key within the top level of the {@link source} object, or returns {@link defaultValue}
+ * @param source The object to search
+ * @param key The key for the property on source. Must exist at the top level of the source object (no periods)
+ * @param defaultValue The default value to use if the key does not exist.
+ */
+function GetFastValue(
+  source: Record<string, any>,
+  key: string,
+  defaultValue?: any
+): Record<string, any> {
+  const t = typeof source;
+  if (!source || t === 'number' || t === 'string') return defaultValue!;
+  else if (source.hasOwnProperty(key) && source[key] !== undefined)
+    return source[key];
+  else return defaultValue!;
+}
+export default GetFastValue;
