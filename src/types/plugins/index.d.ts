@@ -1,4 +1,4 @@
-export interface CorePluginContainer {
+interface CorePluginContainer {
   /**
    * The unique name of this plugin in the core plugin cache.
    */
@@ -17,7 +17,7 @@ export interface CorePluginContainer {
   custom?: boolean;
 }
 
-export interface CustomPluginContainer {
+interface CustomPluginContainer {
   /**
    * The unique name of this plugin in the custom plugin cache.
    */
@@ -28,7 +28,7 @@ export interface CustomPluginContainer {
   plugin: Function;
 }
 
-export interface GlobalPlugin {
+interface GlobalPlugin {
   /**
    * The unique name of this plugin within the plugin cache.
    */

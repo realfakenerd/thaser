@@ -1,4 +1,4 @@
-import { Map as CustomMap } from '../structs';
+import { Map as CustomMap } from '@thaser/structs';
 import { EventEmitter } from 'eventemitter3';
 import Events from './events';
 /**

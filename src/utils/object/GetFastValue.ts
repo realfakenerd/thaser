@@ -4,11 +4,11 @@
  * @param key The key for the property on source. Must exist at the top level of the source object (no periods)
  * @param defaultValue The default value to use if the key does not exist.
  */
-function GetFastValue(
-  source: Record<string, any>,
+function GetFastValue<T extends Record<string, any>>(
+  source: T,
   key: string,
   defaultValue?: any
-): Record<string, any> {
+) {
   const t = typeof source;
   if (!source || t === 'number' || t === 'string') return defaultValue!;
   else if (source.hasOwnProperty(key) && source[key] !== undefined)

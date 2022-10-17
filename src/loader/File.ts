@@ -1,7 +1,7 @@
-import { BaseCache } from '../cache';
+import { BaseCache } from '@thaser/cache';
 import CONST from './const';
 import { FileConfig, XHRSettingsObject } from '../types/loader';
-import { GetFastValue } from '../utils';
+import { GetFastValue } from '@utils';
 import LoaderPlugin from './LoaderPlugin';
 import GetURL from './GetURL';
 import XHRLoader from './XHRLoader';

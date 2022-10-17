@@ -1,4 +1,6 @@
-export interface CreateSceneFromObjectConfig {
+import { Scene } from '@phaser/scene';
+
+interface CreateSceneFromObjectConfig {
   /**
    * The scene's init callback.
    */
@@ -23,29 +25,29 @@ export interface CreateSceneFromObjectConfig {
    * Any values, which will be merged into the Scene's Data Manager store.
    */
   'extend.data'?: any;
-};
+}
 
 /**
  * Can be defined on your own Scenes. Use it to create your game objects.
  * This method is called by the Scene Manager when the scene starts, after `init()` and `preload()`.
  * If the LoaderPlugin started after `preload()`, then this method is called only after loading is complete.
  */
-export type SceneCreateCallback = (this: Scene, data: object) => void;
+type SceneCreateCallback = (this: Scene, data: object) => void;
 
 /**
  * Can be defined on your own Scenes.
  * This method is called by the Scene Manager when the scene starts, before `preload()` and `create()`.
  */
-export type SceneInitCallback = (this: Scene, data: object) => void;
+type SceneInitCallback = (this: Scene, data: object) => void;
 
 /**
  * Can be defined on your own Scenes. Use it to load assets.
  * This method is called by the Scene Manager, after `init()` and before `create()`, only if the Scene has a LoaderPlugin.
  * After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically.
  */
-export type ScenePreloadCallback = (this: Scene) => void;
+type ScenePreloadCallback = (this: Scene) => void;
 
-export interface SceneTransitionConfig {
+interface SceneTransitionConfig {
   /**
    * The Scene key to transition to.
    */
@@ -86,15 +88,11 @@ export interface SceneTransitionConfig {
    * An object containing any data you wish to be passed to the target scene's init / create methods (if sleep is false) or to the target scene's wake event callback (if sleep is true).
    */
   data?: any;
-};
+}
 
-export type SceneUpdateCallback = (
-  this: Scene,
-  time: number,
-  delta: number
-) => void;
+type SceneUpdateCallback = (this: Scene, time: number, delta: number) => void;
 
-export interface SettingsConfig {
+interface SettingsConfig {
   /**
    * The unique key of this Scene. Must be unique within the entire Game instance.
    */
@@ -114,9 +112,7 @@ export interface SettingsConfig {
   /**
    * An optional Camera configuration object.
    */
-  cameras?:
-    | JSONCamera
-    | JSONCamera[];
+  cameras?: JSONCamera | JSONCamera[];
   /**
    * Overwrites the default injection map for a scene.
    */
@@ -137,9 +133,9 @@ export interface SettingsConfig {
    * The plugin configuration object for the Scene.
    */
   plugins?: false | any;
-};
+}
 
-export interface SettingsObject  {
+interface SettingsObject {
   /**
    * The current status of the Scene. Maps to the Scene constants.
    */
@@ -187,9 +183,7 @@ export interface SettingsObject  {
   /**
    * The Camera configuration object.
    */
-  cameras:
-    | JSONCamera
-    | JSONCamera[];
+  cameras: JSONCamera | JSONCamera[];
   /**
    * The Scene's Injection Map.
    */
@@ -206,4 +200,4 @@ export interface SettingsObject  {
    * The plugin configuration object for the Scene.
    */
   plugins: false | any;
-};
+}

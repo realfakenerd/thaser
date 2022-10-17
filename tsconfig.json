@@ -15,8 +15,13 @@
     "removeComments": false,
     "lib": ["esnext", "dom"],
     "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@thaser/*": ["src/*"],
+      "@utils": ["src/utils"]
+    }
   },
   "include": [
-    "src/**/*.ts"
+    "./src"
   ]
 }

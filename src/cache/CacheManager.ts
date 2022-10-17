@@ -1,5 +1,5 @@
 import BaseCache from './BaseCache';
-import GameEvents from '../core/events';
+import GameEvents from '@thaser/core/events';
 /**
  * The Cache Manager is the global cache owned and maintained by the Game instance.
  *

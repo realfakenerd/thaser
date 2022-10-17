@@ -57,5 +57,3 @@ interface Vector4Like {
    */
   w?: number;
 }
-
-export { SinCosTable, Vector2Like, Vector3Like, Vector4Like };

@@ -1,5 +1,5 @@
 import {GetFastValue} from '../utils'
-import Systems from './System';
+import Systems from './Systems';
 /**
  * Builds an array of which plugins (not including physics plugins) should be activated for the given Scene.
  * @param sys The Scene Systems object to check for plugins.

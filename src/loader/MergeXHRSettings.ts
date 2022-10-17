@@ -1,5 +1,5 @@
 import { XHRSettingsObject } from '../types/loader';
-import { Extend } from '../utils';
+import { Extend } from '@utils';
 import XHRSettings from './XHRSettings';
 
 /**

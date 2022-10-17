@@ -1,5 +1,5 @@
 import {GetFastValue, UppercaseFirst} from '../utils'
-import Systems from './System'
+import Systems from './Systems'
 /**
  * Builds an array of which physics plugins should be activated for the given Scene.
  * @param sys The scene system to get the physics systems of.

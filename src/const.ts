@@ -3,7 +3,7 @@ import { BlendModes, ScaleModes } from './renderer';
 /** Global constants. */
 const CONST = {
   /** BASE Phaser Release Version */
-  VERSION: '3.60.0-beta.9',
+  VERSION: '3.60.0-beta.10',
 
   BlendModes,
   ScaleModes,

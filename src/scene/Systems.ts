@@ -1,8 +1,16 @@
-import { SettingsConfig } from '../types/scene';
+import { SettingsConfig, SettingsObject } from '../types/scene';
 import { NOOP } from '../utils';
 import { CONST } from './const';
+import GetScenePlugins from './GetScenePlugins';
+import GetPhysicsPlugins from './GetPhysicsPlugins';
 import Scene from './Scene';
 import Settings from './Settings';
+import Events from './events';
+import { DefaultPlugins, PluginManager, ScenePlugin } from '../plugins';
+import { CacheManager } from '../cache';
+import { EventEmitter } from '../events';
+import GLOBAL_CONST from '../const'; 
+
 /**
  * The Scene Systems class.
  *
@@ -29,7 +37,7 @@ export default class Systems {
    * This starts out as NOOP during init, preload and create, and at the end of create
    * it swaps to be whatever the Scene.update function is.
    */
-  sceneUpdate = NOOP;
+  private sceneUpdate = NOOP;
 
   /**
    * A reference to the Scene that these Systems belong to.
@@ -39,7 +47,7 @@ export default class Systems {
   /**
    * A reference to the Phaser Game instance.
    */
-  game: Phaser.Game;
+  game: Game;
 
   /**
    * A reference to either the Canvas or WebGL Renderer that this Game is using.
@@ -56,7 +64,7 @@ export default class Systems {
   /**
    * The Scene Settings. This is the parsed output based on the Scene configuration.
    */
-  settings: Phaser.Types.Scenes.SettingsObject;
+  settings: SettingsObject;
 
   /**
    * A handy reference to the Scene canvas / context.
@@ -81,14 +89,14 @@ export default class Systems {
    *
    * In the default set-up you can access this from within a Scene via the `this.cache` property.
    */
-  cache: Phaser.Cache.CacheManager;
+  cache!: CacheManager;
 
   /**
    * A reference to the global Plugins Manager.
    *
    * In the default set-up you can access this from within a Scene via the `this.plugins` property.
    */
-  plugins: Phaser.Plugins.PluginManager;
+  plugins!: PluginManager;
 
   /**
    * A reference to the global registry. This is a game-wide instance of the Data Manager, allowing
@@ -156,7 +164,7 @@ export default class Systems {
    *
    * In the default set-up you can access this from within a Scene via the `this.events` property.
    */
-  events: Phaser.Events.EventEmitter;
+  events!: EventEmitter;
 
   /**
    * A reference to the Scene's Game Object Creator.
@@ -177,7 +185,7 @@ export default class Systems {
    *
    * In the default set-up you can access this from within a Scene via the `this.scene` property.
    */
-  scenePlugin: Phaser.Scenes.ScenePlugin;
+  scenePlugin!: ScenePlugin;
 
   /**
    * A reference to the Scene's Update List.
@@ -197,8 +205,30 @@ export default class Systems {
    * It should never be called directly.
    * @param game A reference to the Phaser Game instance.
    */
-  protected init(game: Phaser.Game): void {
+  protected init(game: Game): void {
     this.settings.status = CONST.INIT;
+
+    this.sceneUpdate = NOOP;
+
+    this.game = game;
+    this.renderer = game.renderer;
+
+    this.canvas = game.canvas;
+    this.context = game.context;
+
+    const pluginManager = game.plugins;
+
+    this.plugins = pluginManager;
+
+    pluginManager.addToScene(this, DefaultPlugins.Global, [
+      DefaultPlugins.CoreScene,
+      GetScenePlugins(this),
+      GetPhysicsPlugins(this)
+    ]);
+
+    this.events.emit(Events.BOOT, this);
+
+    this.settings.isBooted = true;
   }
 
   /**
@@ -207,7 +237,13 @@ export default class Systems {
    * @param time The time value from the most recent Game step. Typically a high-resolution timer value, or Date.now().
    * @param delta The delta value since the last frame. This is smoothed to avoid delta spikes by the TimeStep class.
    */
-  step(time: number, delta: number): void;
+  step(time: number, delta: number): void {
+    const events = this.events;
+    events.emit(Events.PRE_UPDATE, time, delta);
+    events.emit(Events.UPDATE, time, delta);
+    this.sceneUpdate.call(this.scene, time, delta);
+    events.emit(Events.POST_UPDATE, time, delta);
+  }
 
   /**
    * Called automatically by the Scene Manager.
@@ -218,17 +254,27 @@ export default class Systems {
     renderer:
       | Phaser.Renderer.Canvas.CanvasRenderer
       | Phaser.Renderer.WebGL.WebGLRenderer
-  ): void;
+  ): void {
+    const displayList = this.displayList;
+    displayList.depthSort();
+    this.events.emit(Events.PRE_RENDER, renderer);
+    this.cameras.render(renderer, displayList);
+    this.events.emit(Events.RENDER, renderer);
+  }
 
   /**
    * Force a sort of the display list on the next render.
    */
-  queueDepthSort(): void;
+  queueDepthSort(): void {
+    this.displayList.queueDepthSort();
+  }
 
   /**
    * Immediately sorts the display list if the flag is set.
    */
-  depthSort(): void;
+  depthSort(): void {
+    this.displayList.depthSort();
+  }
 
   /**
    * Pause this Scene.
@@ -236,13 +282,36 @@ export default class Systems {
    * A paused Scene still renders, it just doesn't run any of its update handlers or systems.
    * @param data A data object that will be passed in the 'pause' event.
    */
-  pause(data?: object): Phaser.Scenes.Systems;
+  pause(data?: object): Systems {
+    const settings = this.settings;
+    const status = this.getStatus();
+
+    if (status !== CONST.CREATING && status !== CONST.RUNNING) {
+      console.warn('Cannot pause non-running Scene', settings.key);
+    } else if (this.settings.active) {
+      settings.status = CONST.PAUSED;
+      settings.active = false;
+      this.events.emit(Events.PAUSE, this, data);
+    }
+
+    return this;
+  }
 
   /**
    * Resume this Scene from a paused state.
    * @param data A data object that will be passed in the 'resume' event.
    */
-  resume(data?: object): Phaser.Scenes.Systems;
+  resume(data?: object): Systems {
+    const events = this.events;
+    const settings = this.settings;
+    if (!this.settings.active) {
+      settings.status = CONST.RUNNING;
+      settings.active = true;
+      events.emit(Events.RESUME, this, data);
+    }
+
+    return this;
+  }
 
   /**
    * Send this Scene to sleep.
@@ -253,13 +322,45 @@ export default class Systems {
    * from other Scenes may still invoke changes within it, so be careful what is left active.
    * @param data A data object that will be passed in the 'sleep' event.
    */
-  sleep(data?: object): Phaser.Scenes.Systems;
+  sleep(data?: object): Systems {
+    const settings = this.settings;
+    const status = this.getStatus();
+
+    if (status !== CONST.CREATING && status !== CONST.RUNNING) {
+      console.warn('Cannot sleep non-running Scene', settings.key);
+    } else {
+      settings.status = CONST.SLEEPING;
+      settings.active = false;
+      settings.visible = false;
+      this.events.emit(Events.SLEEP, this, data);
+    }
+
+    return this;
+  }
 
   /**
    * Wake-up this Scene if it was previously asleep.
    * @param data A data object that will be passed in the 'wake' event.
    */
-  wake(data?: object): Phaser.Scenes.Systems;
+  wake(data?: object): Systems {
+    const events = this.events;
+    const settings = this.settings;
+
+    settings.status = CONST.RUNNING;
+
+    settings.active = true;
+    settings.visivle = true;
+
+    events.emit(Events.WAKE, this, data);
+    if (settings.isTransition) {
+      events.emit(
+        Events.TRANSITION_WAKE,
+        settings.transitionFrom,
+        settings.transitionDuration
+      );
+    }
+    return this;
+  }
 
   /**
    * Returns any data that was sent to this Scene by another Scene.
@@ -267,54 +368,80 @@ export default class Systems {
    * The data is also passed to `Scene.init` and in various Scene events, but
    * you can access it at any point via this method.
    */
-  getData(): any;
+  getData(): any {
+    return this.settings.data;
+  }
 
   /**
    * Returns the current status of this Scene.
    */
-  getStatus(): number;
+  getStatus(): number {
+    return this.settings.status;
+  }
 
   /**
    * Is this Scene sleeping?
    */
-  isSleeping(): boolean;
+  isSleeping(): boolean {
+    return this.settings.status === CONST.SLEEPING;
+  }
 
   /**
    * Is this Scene running?
    */
-  isActive(): boolean;
+  isActive(): boolean {
+    return this.settings.status === CONST.PAUSED;
+  }
 
   /**
    * Is this Scene paused?
    */
-  isPaused(): boolean;
+  isPaused(): boolean {
+    return this.settings.status === CONST.PAUSED;
+  }
 
   /**
    * Is this Scene currently transitioning out to, or in from another Scene?
    */
-  isTransitioning(): boolean;
+  isTransitioning(): boolean {
+    return (
+      this.settings.isTransition || (this.scenePlugin as any)._target !== null
+    );
+  }
 
   /**
    * Is this Scene currently transitioning out from itself to another Scene?
    */
-  isTransitionOut(): boolean;
+  isTransitionOut(): boolean {
+    return (
+      (this.scenePlugin as any)._target !== null &&
+      (this.scenePlugin as any)._duration > 0
+    );
+  }
 
   /**
    * Is this Scene currently transitioning in from another Scene?
    */
-  isTransitionIn(): boolean;
+  isTransitionIn(): boolean {
+    return this.settings.isTransition;
+  }
 
   /**
    * Is this Scene visible and rendering?
    */
-  isVisible(): boolean;
+  isVisible(): boolean {
+    return this.settings.visible;
+  }
 
   /**
    * Sets the visible state of this Scene.
    * An invisible Scene will not render, but will still process updates.
    * @param value `true` to render this Scene, otherwise `false`.
    */
-  setVisible(value: boolean): Phaser.Scenes.Systems;
+  setVisible(value: boolean): Systems {
+    this.settings.visible = value;
+    return this;
+  }
 
   /**
    * Set the active state of this Scene.
@@ -323,14 +450,32 @@ export default class Systems {
    * @param value If `true` the Scene will be resumed, if previously paused. If `false` it will be paused.
    * @param data A data object that will be passed in the 'resume' or 'pause' events.
    */
-  setActive(value: boolean, data?: object): Phaser.Scenes.Systems;
+  setActive(value: boolean, data?: object): Systems {
+    if (value) return this.resume(data);
+    else return this.pause(data);
+  }
 
   /**
    * Start this Scene running and rendering.
    * Called automatically by the SceneManager.
    * @param data Optional data object that may have been passed to this Scene from another.
    */
-  start(data: object): void;
+  start(data: object): void {
+    const events = this.events;
+    const settings = this.settings;
+
+    if (data) {
+      settings.data = data;
+    }
+
+    settings.status = CONST.START;
+
+    settings.active = true;
+    settings.visible = true;
+
+    events.emit(Events.START, this);
+    events.emit(Events.READY, this, data);
+  }
 
   /**
    * Shutdown this Scene and send a shutdown event to all of its systems.
@@ -340,5 +485,67 @@ export default class Systems {
    * to free-up resources.
    * @param data A data object that will be passed in the 'shutdown' event.
    */
-  shutdown(data?: object): void;
+  shutdown(data?: object): void {
+    const events = this.events;
+    const settings = this.settings;
+
+    events.off(Events.TRANSITION_INIT);
+    events.off(Events.TRANSITION_START);
+    events.off(Events.TRANSITION_COMPLETE);
+    events.off(Events.TRANSITION_OUT);
+
+    settings.status = CONST.SHUTDOWN;
+
+    settings.active = false;
+    settings.visible = false;
+
+    if (this.renderer === GLOBAL_CONST.WEBGL) {
+      this.renderer.resetTextures(true);
+    }
+
+    events.emit(Events.SHUTDOWN, this, data);
+  }
+
+  /**
+   * Destroy this Scene and send a destroy event all of its systems.
+   * A destroyed Scene cannot be restarted.
+   * You should not call this directly, instead use `SceneManager.remove`.
+   */
+  destroy() {
+    const events = this.events;
+    const settings = this.settings;
+
+    settings.status = CONST.DESTROYED;
+
+    settings.active = false;
+    settings.visible = false;
+
+    events.emit(Events.DESTROY, this);
+
+    events.removeAllListeners();
+
+    const props = [
+      'scene',
+      'game',
+      'anims',
+      'cache',
+      'plugins',
+      'registry',
+      'sound',
+      'textures',
+      'add',
+      'camera',
+      'displayList',
+      'events',
+      'make',
+      'scenePlugin',
+      'updateList'
+    ];
+
+    let i = 0;
+    const length = props.length;
+    for (i; i < length; i++) {
+      this[props[i] as keyof Systems] = null;
+    }
+  }
 }
