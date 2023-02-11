@@ -5,3 +5,8 @@ declare type DataEachCallback = (
   value: any,
   ...args: any[]
 ) => void;
+
+interface Window {
+  FORCE_WEBGL: boolean;
+  FORCE_CANVAS: boolean;
+}
