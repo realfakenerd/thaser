@@ -20,7 +20,7 @@
     "build": "tsc --build --pretty && vite build",
     "lint": "ts-standard",
     "preview": "vite preview",
-    "test": "node ./scripts/build.js"
+    "test": "vitest"
   },
   "devDependencies": {
     "execa": "^6.1.0",
