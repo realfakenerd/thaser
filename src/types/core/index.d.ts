@@ -1,6 +1,11 @@
 import { Scene } from '@thaser/scene';
 
 export interface GameConfig {
+  scaleMode: any;
+  minWidth: number;
+  minHeight: number;
+  maxWidth: number;
+  maxHeight: number;
   /**
    * The width of the game, in game pixels.
    */

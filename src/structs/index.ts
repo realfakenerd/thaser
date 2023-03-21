@@ -1,3 +1,3 @@
 import Map from './Map';
-
-export { Map };
+import Size from './Size';
+export { Map, Size };

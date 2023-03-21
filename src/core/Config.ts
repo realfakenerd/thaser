@@ -1,11 +1,14 @@
 import { DefaultPlugins } from '@thaser/plugins';
 import { GameConfig } from '@thaser/types/core';
 import { GetFastValue, GetValue, IsPlainObject, NOOP } from '@thaser/utils';
+import { RND } from '@thaser/math';
+import {Input, OS} from '@thaser/device'
+
 import CONST from '../const';
 /**
  * The active game configuration settings, parsed from a {@link Phaser.Types.Core.GameConfig} object.
  */
-export class Config {
+export default class Config {
   /**
    *
    * @param gameConfig The configuration object for your Phaser Game instance.
@@ -60,7 +63,9 @@ export class Config {
     this.seed = GetValue(gameConfig, 'seed', [
       (Date.now() * Math.random()).toString()
     ]);
-    PhaserMath.RND = new PhaserMath.RandomDataGenerator(this.seed);
+
+    new RND(this.seed);
+
     this.gameTitle = GetValue(gameConfig, 'title', '');
     this.gameURL = GetValue(
       gameConfig,
@@ -120,7 +125,7 @@ export class Config {
       true
     );
 
-    this.inputTouch = GetValue(gameConfig, 'input.touch', Device.input.touch);
+    this.inputTouch = GetValue(gameConfig, 'input.touch', Input.touch);
 
     this.inputTouchEventTarget = GetValue(
       gameConfig,
@@ -172,7 +177,7 @@ export class Config {
 
     const renderConfig = GetValue(gameConfig, 'render', null);
 
-   this.pipeline = GetValue(renderConfig, 'pipeline', null, gameConfig);
+    this.pipeline = GetValue(renderConfig, 'pipeline', null, gameConfig);
 
     this.antialias = GetValue(renderConfig, 'antialias', true, gameConfig);
 
@@ -194,7 +199,12 @@ export class Config {
 
     this.roundPixels = GetValue(renderConfig, 'roundPixels', false, gameConfig);
 
-    this.pixelArt = GetValue(renderConfig, 'pixelArt', this.zoom !== 1, gameConfig);
+    this.pixelArt = GetValue(
+      renderConfig,
+      'pixelArt',
+      this.zoom !== 1,
+      gameConfig
+    );
 
     if (this.pixelArt) {
       this.antialias = false;
@@ -215,7 +225,7 @@ export class Config {
       renderConfig,
       'preserveDrawingBuffer',
       false,
-        gameConfig
+      gameConfig
     );
 
     this.premultipliedAlpha = GetValue(
@@ -269,7 +279,7 @@ export class Config {
     this.loaderMaxParallelDownloads = GetValue(
       gameConfig,
       'loader.maxParallelDownloads',
-      Device.os.android ? 6 : 32
+      OS.android ? 6 : 32
     );
 
     this.loaderCrossOrigin = GetValue(

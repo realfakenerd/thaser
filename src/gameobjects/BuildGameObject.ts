@@ -1,6 +1,6 @@
-import { GetAdvancedValue } from '@utils';
-import { Scene } from '@thaser/scene';
 import { BlendModes } from '@thaser/renderer';
+import { Scene } from '@thaser/scene';
+import { GetAdvancedValue } from '@utils';
 import GameObject from './GameObject';
 /**
  * Builds a Game Object using the provided configuration object.
@@ -79,3 +79,5 @@ function BuildGameObject(
 
   return gameObject;
 }
+
+export default BuildGameObject;

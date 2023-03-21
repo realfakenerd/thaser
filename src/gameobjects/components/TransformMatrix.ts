@@ -1,6 +1,5 @@
-import { Vector2 } from '../../math';
-import MATH_CONST from '../../math/const';
-import { Vector2Like } from '../../types/math';
+import { CONST as MATH_CONST, Vector2 } from '@thaser/math';
+import { Vector2Like } from '@thaser/types/math';
 
 export default class TransformMatrix {
   /**

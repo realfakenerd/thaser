@@ -1,9 +1,9 @@
 import { EventEmitter } from 'eventemitter3';
-import FileTypesManager from '../loader/FileTypesManager';
+import FileTypesManager from '@thaser/loader/FileTypesManager';
 import { Scene } from '../scene';
-import Systems from '../scene/Systems';
-import { GlobalPlugin } from '../types/plugins';
-import { GetFastValue, Remove } from '../utils';
+import {Systems} from '@thaser/scene';
+import { GlobalPlugin } from '@thaser/types/plugins';
+import { GetFastValue, Remove } from '@utils';
 import BasePlugin from './BasePlugin';
 import PluginCache from './PluginCache';
 
@@ -55,7 +55,7 @@ export default class PluginManager extends EventEmitter {
    */
   constructor(game: Game) {
     super();
-
+    
     this.game = game;
 
     if (game.isBooted) {

@@ -1,4 +1,4 @@
-interface SinCosTable {
+export interface SinCosTable {
   /**
    * The sine value.
    */
@@ -13,7 +13,7 @@ interface SinCosTable {
   length: number;
 }
 
-interface Vector2Like {
+export interface Vector2Like {
   /**
    * The x component.
    */
@@ -24,7 +24,7 @@ interface Vector2Like {
   y?: number;
 }
 
-interface Vector3Like {
+export interface Vector3Like {
   /**
    * The x component.
    */
@@ -39,7 +39,7 @@ interface Vector3Like {
   z?: number;
 }
 
-interface Vector4Like {
+export interface Vector4Like {
   /**
    * The x component.
    */
