@@ -17,13 +17,13 @@ import { GetValue } from '@utils';
  * @param callback A callback to be invoked for each item successfully added to the array.
  * @param context The context in which the callback is invoked.
  */
-function Add(
+function Add<T>(
   array: any[],
-  item: any | any[],
+  item: T | T[],
   limit?: number,
   callback?: Function,
   context = array
-): any[] {
+) {
   const remaining = limit! - array.length;
   if (limit && limit > 0) {
     if (remaining <= 0) return null as any;
@@ -65,7 +65,7 @@ function Add(
     }
   }
 
-  return item;
+  return item as T[];
 }
 
 /**
@@ -88,14 +88,14 @@ function Add(
  * @param callback A callback to be invoked for each item successfully added to the array.
  * @param context The context in which the callback is invoked.
  */
-function AddAt(
+function AddAt<T>(
   array: any[],
-  item: any | any[],
+  item: T | T[],
   index = 0,
   limit?: number,
   callback?: Function,
   context = array
-): any[] {
+) {
   const remaining = limit! - array.length;
   if (limit && limit > 0) {
     if (remaining <= 0) return null as any;
@@ -145,7 +145,7 @@ function AddAt(
     }
   }
 
-  return item;
+  return item as T[];
 }
 
 /**
@@ -368,13 +368,13 @@ function GetAll(
  * @param startIndex An optional start index to search from. Default 0.
  * @param endIndex An optional end index to search up to (but not included) Default array.length.
  */
-function GetFirst(
-  array: any[],
+function GetFirst<T>(
+  array: T[],
   property?: string,
   value?: any,
   startIndex = 0,
   endIndex = array.length
-): object {
+) {
   if (SafeRange(array, startIndex, endIndex)) {
     let i = startIndex;
     for (i; i < endIndex; i++) {
@@ -390,7 +390,7 @@ function GetFirst(
     }
   }
 
-  return null as any;
+  return null as T;
 }
 
 /**
@@ -1134,7 +1134,7 @@ function Swap(array: any[], item1: any, item2: any): any[] {
  * @param oldChild The element in the array that will be replaced.
  * @param newChild The element to be inserted into the array at the position of `oldChild`.
  */
-function Replace(array: any[], oldChild: any, newChild: any): boolean {
+function Replace<T,K>(array: any[], oldChild: T, newChild: K): boolean {
   const index1 = array.indexOf(oldChild);
   const index2 = array.indexOf(newChild);
   if (index1 !== -1 && index2 === -1) {

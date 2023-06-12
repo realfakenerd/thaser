@@ -79,3 +79,5 @@ function BuildGameObject(
 
   return gameObject;
 }
+
+export default BuildGameObject;

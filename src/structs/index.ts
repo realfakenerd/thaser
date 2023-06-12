@@ -1,3 +1,2 @@
-import Map from './Map';
-
-export { Map };
+export { default as Map } from './Map';
+export { default as List } from './List';

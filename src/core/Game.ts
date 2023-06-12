@@ -1,5 +1,5 @@
 import { GameConfig } from '@thaser/types/core';
-import { Config } from './Config';
+import  Config from './Config';
 
 /**
  * The Phaser.Game instance is the main controller for the entire Phaser game. It is responsible

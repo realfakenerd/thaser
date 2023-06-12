@@ -1,4 +1,3 @@
-import Events from './events';
-export {
-    Events
-};
+export { default as Events } from './events';
+export { default as Game } from './Game';
+export { default as Config } from './Config';

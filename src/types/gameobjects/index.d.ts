@@ -1,4 +1,6 @@
-interface GameObjectConfig {
+import { TransformMatrix } from '@thaser/gameobjects';
+
+export interface GameObjectConfig {
   /**
    * The x position of the Game Object.
    */
@@ -61,85 +63,100 @@ interface GameObjectConfig {
   add?: boolean;
 }
 
-interface JSONGameObject {
-    /**
-     * The name of this Game Object.
-     */
-    name: string;
-    /**
-     * A textual representation of this Game Object, i.e. `sprite`.
-     */
-    type: string;
-    /**
-     * The x position of this Game Object.
-     */
-    x: number;
-    /**
-     * The y position of this Game Object.
-     */
-    y: number;
-    /**
-     * The scale of this Game Object
-     */
-    scale: object;
-    /**
-     * The horizontal scale of this Game Object.
-     */
-    "scale.x": number;
-    /**
-     * The vertical scale of this Game Object.
-     */
-    "scale.y": number;
-    /**
-     * The origin of this Game Object.
-     */
-    origin: object;
-    /**
-     * The horizontal origin of this Game Object.
-     */
-    "origin.x": number;
-    /**
-     * The vertical origin of this Game Object.
-     */
-    "origin.y": number;
-    /**
-     * The horizontally flipped state of the Game Object.
-     */
-    flipX: boolean;
-    /**
-     * The vertically flipped state of the Game Object.
-     */
-    flipY: boolean;
-    /**
-     * The angle of this Game Object in radians.
-     */
-    rotation: number;
-    /**
-     * The alpha value of the Game Object.
-     */
-    alpha: number;
-    /**
-     * The visible state of the Game Object.
-     */
-    visible: boolean;
-    /**
-     * The Scale Mode being used by this Game Object.
-     */
-    scaleMode: number;
-    /**
-     * Sets the Blend Mode being used by this Game Object.
-     */
-    blendMode: number | string;
-    /**
-     * The texture key of this Game Object.
-     */
-    textureKey: string;
-    /**
-     * The frame key of this Game Object.
-     */
-    frameKey: string;
-    /**
-     * The data of this Game Object.
-     */
-    data: object;
-};
+export interface JSONGameObject {
+  /**
+   * The name of this Game Object.
+   */
+  name: string;
+  /**
+   * A textual representation of this Game Object, i.e. `sprite`.
+   */
+  type: string;
+  /**
+   * The x position of this Game Object.
+   */
+  x: number;
+  /**
+   * The y position of this Game Object.
+   */
+  y: number;
+  /**
+   * The scale of this Game Object
+   */
+  scale: object;
+  /**
+   * The horizontal scale of this Game Object.
+   */
+  'scale.x': number;
+  /**
+   * The vertical scale of this Game Object.
+   */
+  'scale.y': number;
+  /**
+   * The origin of this Game Object.
+   */
+  origin: object;
+  /**
+   * The horizontal origin of this Game Object.
+   */
+  'origin.x': number;
+  /**
+   * The vertical origin of this Game Object.
+   */
+  'origin.y': number;
+  /**
+   * The horizontally flipped state of the Game Object.
+   */
+  flipX: boolean;
+  /**
+   * The vertically flipped state of the Game Object.
+   */
+  flipY: boolean;
+  /**
+   * The angle of this Game Object in radians.
+   */
+  rotation: number;
+  /**
+   * The alpha value of the Game Object.
+   */
+  alpha: number;
+  /**
+   * The visible state of the Game Object.
+   */
+  visible: boolean;
+  /**
+   * The Scale Mode being used by this Game Object.
+   */
+  scaleMode: number;
+  /**
+   * Sets the Blend Mode being used by this Game Object.
+   */
+  blendMode: number | string;
+  /**
+   * The texture key of this Game Object.
+   */
+  textureKey: string;
+  /**
+   * The frame key of this Game Object.
+   */
+  frameKey: string;
+  /**
+   * The data of this Game Object.
+   */
+  data: object;
+}
+
+export interface GetCalcMatrixResults {
+  /**
+   * The calculated Camera matrix.
+   */
+  camera: TransformMatrix;
+  /**
+   * The calculated Sprite (Game Object) matrix.
+   */
+  sprite: TransformMatrix;
+  /**
+   * The calculated results matrix, factoring all others in.
+   */
+  calc: TransformMatrix;
+}

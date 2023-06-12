@@ -5,7 +5,7 @@ import CONST from '../const';
 /**
  * The active game configuration settings, parsed from a {@link Phaser.Types.Core.GameConfig} object.
  */
-export class Config {
+export default class Config {
   /**
    *
    * @param gameConfig The configuration object for your Phaser Game instance.
@@ -172,7 +172,7 @@ export class Config {
 
     const renderConfig = GetValue(gameConfig, 'render', null);
 
-   this.pipeline = GetValue(renderConfig, 'pipeline', null, gameConfig);
+    this.pipeline = GetValue(renderConfig, 'pipeline', null, gameConfig);
 
     this.antialias = GetValue(renderConfig, 'antialias', true, gameConfig);
 
@@ -194,7 +194,12 @@ export class Config {
 
     this.roundPixels = GetValue(renderConfig, 'roundPixels', false, gameConfig);
 
-    this.pixelArt = GetValue(renderConfig, 'pixelArt', this.zoom !== 1, gameConfig);
+    this.pixelArt = GetValue(
+      renderConfig,
+      'pixelArt',
+      this.zoom !== 1,
+      gameConfig
+    );
 
     if (this.pixelArt) {
       this.antialias = false;
@@ -215,7 +220,7 @@ export class Config {
       renderConfig,
       'preserveDrawingBuffer',
       false,
-        gameConfig
+      gameConfig
     );
 
     this.premultipliedAlpha = GetValue(
