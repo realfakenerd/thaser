@@ -1,15 +1,20 @@
+import { Game } from '@thaser/core';
+import { DataManager } from '@thaser/data';
+import { DisplayList } from '@thaser/gameobjects';
+import { CanvasRenderer } from '@thaser/renderer/canvas';
+import { WebGLRenderer } from '@thaser/renderer/webgl';
+import { CacheManager } from '../cache';
+import GLOBAL_CONST from '../const';
+import { EventEmitter } from '../events';
+import { DefaultPlugins, PluginManager, ScenePlugin } from '../plugins';
 import { SettingsConfig, SettingsObject } from '../types/scene';
 import { NOOP } from '../utils';
-import { CONST } from './const';
-import GetScenePlugins from './GetScenePlugins';
 import GetPhysicsPlugins from './GetPhysicsPlugins';
+import GetScenePlugins from './GetScenePlugins';
 import Scene from './Scene';
 import Settings from './Settings';
+import { CONST } from './const';
 import Events from './events';
-import { DefaultPlugins, PluginManager, ScenePlugin } from '../plugins';
-import { CacheManager } from '../cache';
-import { EventEmitter } from '../events';
-import GLOBAL_CONST from '../const'; 
 
 /**
  * The Scene Systems class.
@@ -52,9 +57,7 @@ export default class Systems {
   /**
    * A reference to either the Canvas or WebGL Renderer that this Game is using.
    */
-  renderer:
-    | Phaser.Renderer.Canvas.CanvasRenderer
-    | Phaser.Renderer.WebGL.WebGLRenderer;
+  renderer: CanvasRenderer | WebGLRenderer;
 
   /**
    * The Scene Configuration object, as passed in when creating the Scene.
@@ -104,7 +107,7 @@ export default class Systems {
    *
    * In the default set-up you can access this from within a Scene via the `this.registry` property.
    */
-  registry: Phaser.Data.DataManager;
+  registry: DataManager;
 
   /**
    * A reference to the global Scale Manager.
@@ -155,7 +158,7 @@ export default class Systems {
    *
    * In the default set-up you can access this from within a Scene via the `this.children` property.
    */
-  displayList: Phaser.GameObjects.DisplayList;
+  displayList: DisplayList;
 
   /**
    * A reference to the Scene's Event Manager.

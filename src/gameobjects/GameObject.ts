@@ -2,6 +2,7 @@ import { DataManager } from '@thaser/data';
 import { Scene, Events as SceneEvents } from '@thaser/scene';
 import { EventEmitter } from 'eventemitter3';
 import Events from './events';
+import DisplayList from './DisplayList';
 
 /**
  * The base class that all Game Objects extend.

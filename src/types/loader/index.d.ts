@@ -1,4 +1,4 @@
-interface FileConfig {
+export interface FileConfig {
   /**
    * The file type string (image, json, etc) for sorting within the Loader.
    */
@@ -33,7 +33,7 @@ interface FileConfig {
   config?: any;
 }
 
-interface XHRSettingsObject {
+export interface XHRSettingsObject {
   /**
    * The response type of the XHR request, i.e. `blob`, `text`, etc.
    */

@@ -1,3 +1,8 @@
+import { Game } from "@thaser/core";
+import { DataManager } from "@thaser/data";
+import { DisplayList } from "@thaser/gameobjects";
+import { CanvasRenderer } from "@thaser/renderer/canvas";
+import { WebGLRenderer } from "@thaser/renderer/webgl";
 import { CacheManager } from "../cache";
 import { EventEmitter } from "../events";
 import LoaderPlugin from "../loader/LoaderPlugin";
@@ -29,7 +34,7 @@ export default class Scene {
    *
    * This property will only be available if defined in the Scene Injection Map.
    */
-  game: Phaser.Game;
+  game!: Game;
 
   /**
    * A reference to the global Animation Manager.
@@ -50,7 +55,7 @@ export default class Scene {
    *
    * This property will only be available if defined in the Scene Injection Map.
    */
-  registry: Phaser.Data.DataManager;
+  registry!: DataManager;
 
   /**
    * A reference to the Sound Manager.
@@ -109,7 +114,7 @@ export default class Scene {
    *
    * This property will only be available if defined in the Scene Injection Map.
    */
-  children: Phaser.GameObjects.DisplayList;
+  children!: DisplayList;
 
   /**
    * The Scene Lights Manager Plugin.
@@ -125,7 +130,7 @@ export default class Scene {
    *
    * This property will only be available if defined in the Scene Injection Map and the plugin is installed.
    */
-  data: Phaser.Data.DataManager;
+  data!: DataManager;
 
   /**
    * The Scene Input Manager Plugin.
@@ -187,9 +192,9 @@ export default class Scene {
   /**
    * A reference to the renderer instance Phaser is using, either Canvas Renderer or WebGL Renderer.
    */
-  renderer:
-    | Phaser.Renderer.Canvas.CanvasRenderer
-    | Phaser.Renderer.WebGL.WebGLRenderer;
+  renderer!:
+    | CanvasRenderer
+    | WebGLRenderer;
 
   /**
    * This method should be overridden by your own Scenes.

@@ -4,19 +4,20 @@
  *
  * @return A deep copy of the original object.
  */
-function DeepCopy(inObject: Record<any, any>) {
-  let outObject: Record<any, any>;
-  let value: any;
-  let key: any;
-
+function DeepCopy<T>(inObject: T):T {
   if (typeof inObject !== 'object' || inObject === null) return inObject;
 
-  outObject = Array.isArray(inObject) ? [] : {};
+  let outObject: any;
 
-  for(key in inObject) {
-    value = inObject[key];
-
-    outObject[key] = DeepCopy(value);
+  if (Array.isArray(inObject)) {
+    outObject = inObject.map(value => DeepCopy(value));
+  } else {
+    outObject = {} as T;
+    for (let key in inObject) {
+      if (inObject.hasOwnProperty(key)) {
+        outObject[key] = DeepCopy(inObject[key]);
+      }
+    }
   }
 
   return outObject;

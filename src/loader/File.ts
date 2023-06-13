@@ -1,13 +1,13 @@
 import { BaseCache } from '@thaser/cache';
-import CONST from './const';
-import { FileConfig, XHRSettingsObject } from '../types/loader';
 import { GetFastValue } from '@utils';
-import LoaderPlugin from './LoaderPlugin';
+import { FileConfig, XHRSettingsObject } from '@thaser/types/loader';
 import GetURL from './GetURL';
-import XHRLoader from './XHRLoader';
-import XHRSettings from './XHRSettings';
+import LoaderPlugin from './LoaderPlugin';
 import MergeXHRSettings from './MergeXHRSettings';
 import MultiFile from './Multifile';
+import XHRLoader from './XHRLoader';
+import XHRSettings from './XHRSettings';
+import CONST from './const';
 /**
  * The base File class used by all File Types that the Loader can support.
  * You shouldn't create an instance of a File directly, but should extend it with your own class, setting a custom type and processing methods.
@@ -56,7 +56,7 @@ export default class File {
     if (GetFastValue(fileConfig, 'xhrSettings', false)) {
       this.xhrSettings = MergeXHRSettings(
         this.xhrSettings,
-        GetFastValue(fileConfig, 'xhrSettings', {})
+        GetFastValue(fileConfig, 'xhrSettings', {} as any)
       );
     }
 
