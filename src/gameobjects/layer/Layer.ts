@@ -1,9 +1,17 @@
 import { Scene } from '@thaser/scene';
 import { List } from '@thaser/structs';
-import GameObject from '../GameObject';
-import { AlphaSingle, BlendMode, Depth, Mask, Pipeline, Visible } from '../components';
-import DisplayList from '../DisplayList';
 import EventEmitter from 'eventemitter3';
+import DisplayList from '../DisplayList';
+import GameObject from '../GameObject';
+import {Mixin} from '@utils';
+import {
+  AlphaSingle,
+  BlendMode,
+  Depth,
+  Mask,
+  Pipeline,
+  Visible
+} from '../components';
 
 /**
  * A Layer Game Object.
@@ -49,8 +57,9 @@ import EventEmitter from 'eventemitter3';
  * will impact all children being rendered by the Layer.
  */
 export default class Layer
-  extends List<GameObject>
+ extends Mixin(AlphaSingle, BlendMode, Depth, Mask, Pipeline, Visible, EventEmitter, List)
   implements
+    List<GameObject>,
     AlphaSingle,
     BlendMode,
     Depth,
@@ -66,6 +75,8 @@ export default class Layer
    */
   constructor(scene: Scene, children?: GameObject[]) {
     super(scene);
+    super()
+
 
     this.scene = scene;
   }

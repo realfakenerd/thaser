@@ -4,7 +4,7 @@
  *
  * @return A deep copy of the original object.
  */
-function DeepCopy<T>(inObject: T):T {
+function DeepCopy<const T>(inObject: T):T {
   if (typeof inObject !== 'object' || inObject === null) return inObject;
 
   let outObject: any;
