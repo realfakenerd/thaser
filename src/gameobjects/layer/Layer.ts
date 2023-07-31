@@ -3,7 +3,6 @@ import { List } from '@thaser/structs';
 import EventEmitter from 'eventemitter3';
 import DisplayList from '../DisplayList';
 import GameObject from '../GameObject';
-import {Mixin} from '@utils';
 import {
   AlphaSingle,
   BlendMode,
@@ -12,6 +11,7 @@ import {
   Pipeline,
   Visible
 } from '../components';
+import { applyMixins } from '@thaser/utils';
 
 /**
  * A Layer Game Object.
@@ -56,8 +56,14 @@ import {
  * However, you can set the Alpha, Blend Mode, Depth, Mask and Visible state of a Layer. These settings
  * will impact all children being rendered by the Layer.
  */
-export default class Layer
- extends Mixin(AlphaSingle, BlendMode, Depth, Mask, Pipeline, Visible, EventEmitter, List)
+export default class Layer extends applyMixins(List<GameObject>,
+  AlphaSingle,
+  BlendMode,
+  Depth,
+  Mask,
+  Pipeline,
+  Visible,
+  EventEmitter)
   implements
     List<GameObject>,
     AlphaSingle,
@@ -75,9 +81,7 @@ export default class Layer
    */
   constructor(scene: Scene, children?: GameObject[]) {
     super(scene);
-    super()
-
-
+    super(this);
     this.scene = scene;
   }
 
@@ -799,3 +803,13 @@ export default class Layer
    */
   setVisible(value: boolean): this;
 }
+
+export default interface Layer
+  extends List<GameObject>,
+    AlphaSingle,
+    BlendMode,
+    Depth,
+    Mask,
+    Pipeline,
+    Visible,
+    EventEmitter {}

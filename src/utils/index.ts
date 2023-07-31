@@ -1,5 +1,5 @@
 export { default as NOOP } from './NOOP';
-export { default as Mixin } from './Mixin';
+export { default as applyMixins } from './mixin';
 
 export * from './base64';
 export * from './object';

@@ -1,21 +1,12 @@
-type Constructor<T = {}> = new (...args: any[]) => T;
+function applyMixins<T extends new (...args: any[]) => any>(...mixins: T[]): new (...args: any[]) => InstanceType<T> & InstanceType<T> {
+    return class {
+      constructor(...args: any[]) {
+        mixins.forEach(mixin => {
+          const instance = new mixin(...args);
+          Object.assign(this, instance);
+        });
+      }
+    } as new (...args: any[]) => InstanceType<T> & InstanceType<T>;
+  }
 
-function Mixin<TBase extends Constructor[]>(...mixins: TBase) {
-    return function (target) {
-        for (const mixin of mixins) {
-            const descriptors = Object.getOwnPropertyDescriptor(mixin.prototype);
-            Object.defineProperty(target.prototype, descriptors);
-        }
-
-        return target;
-    }
-}
-
-export default Mixin;
-
-// function applyMixins(destino: any, mixins: any[]): any {
-//     for (const mixin of mixins) {
-//       Object.assign(destino.prototype, new mixin());
-//     }
-//     return destino;
-//   }
+export default applyMixins;
